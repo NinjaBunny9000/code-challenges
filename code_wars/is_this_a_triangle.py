@@ -3,6 +3,7 @@
 def is_triangle(a, b, c):
     return a + b > c and a + c > b and b + c > a
 
+# "test"-cases
 print(is_triangle(1, 2, 2))
 print(is_triangle(7, 2, 2))
 print(is_triangle(4, 2, 3))
