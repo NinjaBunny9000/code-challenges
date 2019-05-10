@@ -24,12 +24,12 @@ def solution(number):
         array_of_multiples.append(multiple)
         i += 1
 
-    for val in array_of_multiples:
+    for val in set(array_of_multiples):
         sum_of_multiples += val
 
     return sum_of_multiples
 
 # "test"-cases
-# print(solution(10))  # should equal 23
-print(solution(93))  # should equal 23
-# print(solution(10533))  # should equal 23
+print(f"SOLUTION >> {solution(10)}")  # should equal 78
+print(f"SOLUTION >> {solution(93)}")  # should equal 78
+print(f"SOLUTION >> {solution(10533)}")  # should equal 78
