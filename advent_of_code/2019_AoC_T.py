@@ -5,6 +5,6 @@ startTime = datetime.now()
 def solver():
     pass
 
-print(solver(168630, 718098)) # the full test
+print(solver()) # the full test
 
-print(f"Runtime: {datetime.now() - startTime}")
+print(f"Run time: {datetime.now() - startTime}")
