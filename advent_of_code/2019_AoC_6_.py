@@ -62,9 +62,6 @@ B>COM = 1
 total = 6
 """
 
-# TODO make this count things via next
-# TODO use count_orbits
-
 class Orbits:
 
     def __init__(self):
@@ -72,9 +69,8 @@ class Orbits:
         self.head = None
         # self.tail = None
         self.tails = []
-        self.obj_mapper = []
+        self.orbit_tracker = []
         self.branches = []
-        self.orbited = []
 
     def add(self, data, prev):
         prev = None if data == 'COM' else prev
@@ -88,27 +84,6 @@ class Orbits:
             self.tails.append(data)
 
     def traverse(self, tail):  # pass in a starting tail
-        start = 0
-        end = 0
-        prev_obj = tail
-        print(f"\nTRAVERSING BRANCH {tail}")
-
-        # start at the tail and work backwards
-        while prev_obj is not None:
-            # if the object hasn't been marked as orbited around
-            if prev_obj not in self.orbited:
-                start += 1 # count it
-                self.orbited.append(prev_obj)
-            else:
-                end += 1
-            prev_obj = self.orbit_map[prev_obj]
-
-        print(f"{start=} {end=}")
-                # add to list obj's that have been mapped as orbited
-            # update prev_obj
-        return start
-
-    def old_traverse(self, tail):  # pass in a starting tail
         counter = 0  # DEBUG test counter for orbits
         prev_orbit = tail
         print(f"\nTRAVERSING BRANCH {tail}")
@@ -136,16 +111,6 @@ class Orbits:
 
     def get_tails(self):
         return self.tails
-
-    def count_orbits(self, obj):
-        
-        if obj.next is None:
-            return 0
-        else:
-            total = 0
-            for body in objects.keys():
-                total += count_orbits(obj)
-            return 1 + total
 
 def orbit_validator(map_data):
 
@@ -178,7 +143,7 @@ def orbit_validator(map_data):
 
     total_orbits = 0
 
-    # print(f"{orbits.orbit_tracker=}")
+    print(f"{orbits.orbit_tracker=}")
 
     for tail in orbits.get_tails():
         # get length of the current tree and sum it's orbits
@@ -191,7 +156,7 @@ def orbit_validator(map_data):
         total_orbits += sum_of_orbits
         print(f"{sum_of_orbits=}")
         
-    print(f"{orbits.orbited=}")
+
     print(f"{total_orbits=}")
     print(f"{orbits.orbit_tracker=}")
 
@@ -200,7 +165,6 @@ def orbit_validator(map_data):
     # print(f"{final_coord=}")
 
     return "Done."
-
 
 # print(orbit_validator(['COMB','BC','CD'])) # test (no branches)
 print(orbit_validator(['COMB','BC','CD','DE','EF','BG', 'GH','DI','EJ','JK','KL'])) # test (with branches)
