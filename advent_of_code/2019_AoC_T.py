@@ -1,8 +1,11 @@
 # Puzzle: 
 
 from datetime import datetime
+import pprint
 
 startTime = datetime.now()
+pp = pprint.PrettyPrinter()
+
 
 """
 Puzzle Notes
