@@ -4,7 +4,7 @@ from datetime import datetime
 import pprint
 
 startTime = datetime.now()
-pp = pprint.PrettyPrinter(indent=4)
+pp = pprint.PrettyPrinter()
 
 """
 Puzzle Notes
@@ -28,18 +28,48 @@ K)L
 
 ['COMB','BC','CD','DE','EF','BG', 'GH','DI','EJ','JK','KL']
 
+        2   3       5   6   7
         G - H       J - K - L
-       /           /
+       /      3    /
 COM - B - C - D - E - F
-               \
+      1   2    \  4   5
                 I
+                4
 
+H = 1+2+3 = 6
+I = 2+3+4 = 9
+L = 4+5+6+7 = 22
+F = 5
 TOTAL = 42
 
-H = 3+2+1 = 6
-I = 4+3+2 = 7
-L = 7+6+5+4 = 22
-F = 5 = 40
+"""
+def counter_temp():
+
+    body = 'COM'
+    body_next = 'B'
+    counter = 0
+    branched_node = None
+    branched_value = 0
+
+    counter += 1
+
+    if len(orbits[body]) > 0:
+
+
+"""
+- count an orbit
+- if it's a branch
+    - note the branch point & value
+    - continue through the branch, counting the orbit
+- if it's none
+    - return
+
+"""
+
+
+
+"""
+
 
 EST (w/ COM) = 59
 EST (w/o COM) = 40
@@ -65,141 +95,90 @@ total = 6
 # TODO make this count things via next
 # TODO use count_orbits
 
-class Orbits:
+class OrbitMapper:
 
     def __init__(self):
-        self.orbit_map = {}
-        self.head = None
-        # self.tail = None
-        self.tails = []
-        self.obj_mapper = []
-        self.branches = []
-        self.orbited = []
+        self.orbit_map = {}  # linked list/map of all the orbits
+        self.head = None  # start of the linked list
+        self.tails = []  # list of tails
+        self.orbit_counter = 0
+        self.branch_head = None
 
-    def add(self, data, prev):
-        prev = None if data == 'COM' else prev
-        self.orbit_map[data] = prev
-        self.head = prev if self.head is None else self.head
-        # self.tail = data
-        # self.tails[self.tails.index(prev)] = data if prev in self.tails else self.tails.append(data) # keep track of branch tails
-        if prev in self.tails:
-            self.tails[self.tails.index(prev)] = data
-        else:
-            self.tails.append(data)
+    # TODO make it work with lists for values
+    def add(self, body, next_body):
+        self.head = body if self.head is None else self.head  # set the head
+        # if self.branch_head is None:
+        #     print(f"Setting branch head to {self.branch_head}")
+        #     self.branch_head = self.head
 
-    def traverse(self, tail):  # pass in a starting tail
-        start = 0
-        end = 0
-        prev_obj = tail
-        print(f"\nTRAVERSING BRANCH {tail}")
+        # add node to the linked list
+        try:
+            # TODO make this cleaner w/o the except
+            node = list(self.orbit_map[body])
+        except:
+            node = []
+        node.append(next_body)
+        self.orbit_map[body] = node
+        self.orbit_map[next_body] = None  # keep track of branch tails
 
-        # start at the tail and work backwards
-        while prev_obj is not None:
-            # if the object hasn't been marked as orbited around
-            if prev_obj not in self.orbited:
-                start += 1 # count it
-                self.orbited.append(prev_obj)
-            else:
-                end += 1
-            prev_obj = self.orbit_map[prev_obj]
+    def count_orbits_old(self, body):
+        print(f"count_orbits() called on {body}")
+        # if body is None:
+            # body = self.branch_head
+        print(f"{self.orbit_map[body]=}")
+        for branch in self.orbit_map[body]:
+            print(f"{branch=}")
+            print(f"{self.orbit_counter=}")
+            self.count_branch(branch)
+            print('next reached')
+            self.count_orbits(self.orbit_map[branch])
 
-        print(f"{start=} {end=}")
-                # add to list obj's that have been mapped as orbited
-            # update prev_obj
-        return start
+    def count_orbits(self):
+        pass
 
-    def old_traverse(self, tail):  # pass in a starting tail
-        counter = 0  # DEBUG test counter for orbits
-        prev_orbit = tail
-        print(f"\nTRAVERSING BRANCH {tail}")
-        branch = []
-        while prev_orbit is not None:
-            orbit = str(self.orbit_map[prev_orbit]) + prev_orbit
-            # print(f"{orbit=}")
-            branch.insert(0,orbit)
-            prev_orbit = self.orbit_map[prev_orbit]
-            if orbit in self.orbit_tracker:
-                print(f"{orbit} already in orbit_tracker")
-                counter += self.orbit_tracker
-                break
-            else:
-                self.orbit_tracker.insert(0,orbit)
-                counter += 1
-        branches.append(branch)
-        print(f"{branch=}")
-        print(f"{self.orbit_tracker=}")
-        return counter
+    def count_branch_old(self):
+        pass
 
-    def get_length(self, tail):
-        print(f"{tail=}")
-        return self.traverse(tail)
 
-    def get_tails(self):
-        return self.tails
+    def count_branch_old(self, branch):
+        print(f"count_branch() called on {branch}")
 
-    def count_orbits(self, obj):
-        
-        if obj.next is None:
+        # exit condition
+        if self.orbit_map[branch] is None:
+            print(f"returning None from count_branch()")
             return 0
-        else:
-            total = 0
-            for body in objects.keys():
-                total += count_orbits(obj)
-            return 1 + total
+
+        # loop through the branch and count the connections
+        for body in list(self.orbit_map[branch]):
+            if self.orbit_map[branch] is None:
+                return 0
+            # print(f"body {body} // branch {branch} // count {self.orbit_counter}")  # DEBUG
+            self.orbit_counter += self.orbit_counter + 1 + self.count_branch(body)
+            print(f"{self.orbit_counter=}")
+            return self.orbit_counter
+
+
+orbit_mapper = OrbitMapper()
 
 def orbit_validator(map_data):
 
-    i = 0
+    # TODO parse data into a useable list
 
-    # parse everythign out into a list
-
-    orbits = Orbits()
-
-    orbits.add(map_data[0][:-1], None)
-
-    # iterate thru the list and add the orbit coords as nodes in a linked list
-    for _ in map_data:
-
-        # parse the data out into something useable
-
-        # print(f"{map_data[i]=}")  # DEBUG
-        obj = map_data[i][-1]  # object in orbit
-        orbiting = map_data[i][:-1]  # object it's orbiting
-        # print(f"orbit detected: {obj=} {orbiting=}")  # DEBUG
-        # create the node and add it to a list
-        orbits.add(obj, orbiting)
-
-        # print(f"STORED: {i=} {obj=} {orbiting=}")
-        i += 1
-
-    print('map:')
-    pprint.pprint(orbits.orbit_map)
-    print()
-
-    total_orbits = 0
-
-    # print(f"{orbits.orbit_tracker=}")
-
-    for tail in orbits.get_tails():
-        # get length of the current tree and sum it's orbits
-        length = orbits.get_length(tail)
-        print(f"branch {tail} traversed! {length=}")
-        sum_of_orbits = 0
-        while length > 0:
-            sum_of_orbits += length - 1
-            length -= 1
-        total_orbits += sum_of_orbits
-        print(f"{sum_of_orbits=}")
-        
-    print(f"{orbits.orbited=}")
-    print(f"{total_orbits=}")
-    print(f"{orbits.orbit_tracker=}")
+    for i,node in enumerate(map_data):
+        # separate the data into data and next loc
+        body = map_data[i][:-1]
+        next_body = map_data[i][-1]
+        # add the node to the linked list
+        orbit_mapper.add(body, next_body)
 
 
-    # final_coord = orbits[-1]
-    # print(f"{final_coord=}")
-
+    pp.pprint(orbit_mapper.orbit_map)
+    # print(f"{orbit_mapper.tails=}")
+    orbit_mapper.count_orbits(orbit_mapper.head)
+    # print(f"{orbit_mapper.count_orbits(orbit_mapper.head)=}")
+    print(f"Total orbits: {orbit_mapper.orbit_counter}")
     return "Done."
+
 
 
 # print(orbit_validator(['COMB','BC','CD'])) # test (no branches)
