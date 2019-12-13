@@ -1,9 +1,10 @@
 # Puzzle: https://adventofcode.com/2019/day/6
 
-from datetime import datetime
+import time
 import pprint
+from collections import defaultdict
 
-startTime = datetime.now()
+star_time = time.time_ns()
 pp = pprint.PrettyPrinter()
 
 """
@@ -42,35 +43,6 @@ L = 4+5+6+7 = 22
 F = 5
 TOTAL = 42
 
-"""
-def counter_temp():
-
-    body = 'COM'
-    body_next = 'B'
-    counter = 0
-    branched_node = None
-    branched_value = 0
-
-    counter += 1
-
-    if len(orbits[body]) > 0:
-
-
-"""
-- count an orbit
-- if it's a branch
-    - note the branch point & value
-    - continue through the branch, counting the orbit
-- if it's none
-    - return
-
-"""
-
-
-
-"""
-
-
 EST (w/ COM) = 59
 EST (w/o COM) = 40
 
@@ -107,75 +79,43 @@ class OrbitMapper:
     # TODO make it work with lists for values
     def add(self, body, next_body):
         self.head = body if self.head is None else self.head  # set the head
-        # if self.branch_head is None:
-        #     print(f"Setting branch head to {self.branch_head}")
-        #     self.branch_head = self.head
-
         # add node to the linked list
         try:
             # TODO make this cleaner w/o the except
             node = list(self.orbit_map[body])
-        except:
+        except KeyError:
             node = []
         node.append(next_body)
         self.orbit_map[body] = node
-        self.orbit_map[next_body] = None  # keep track of branch tails
+        self.orbit_map[next_body] = []  # keep track of branch tails
 
-    def count_orbits_old(self, body):
-        print(f"count_orbits() called on {body}")
-        # if body is None:
-            # body = self.branch_head
-        print(f"{self.orbit_map[body]=}")
+    #  TODO if you are doing recusion you need to pass the currentTotal by ref and current depth
+    def count_orbits_but_better(self, body):
+        # TODO when it reaches a tail, reset the counter to the one before the branch + 1
+        if self.orbit_map[body] == []:
+            print("tail reached")
+            return
+
+        # TODO figure out if it's a head
         for branch in self.orbit_map[body]:
-            print(f"{branch=}")
-            print(f"{self.orbit_counter=}")
-            self.count_branch(branch)
-            print('next reached')
-            self.count_orbits(self.orbit_map[branch])
-
-    def count_orbits(self):
-        pass
-
-    def count_branch_old(self):
-        pass
-
-
-    def count_branch_old(self, branch):
-        print(f"count_branch() called on {branch}")
-
-        # exit condition
-        if self.orbit_map[branch] is None:
-            print(f"returning None from count_branch()")
-            return 0
-
-        # loop through the branch and count the connections
-        for body in list(self.orbit_map[branch]):
-            if self.orbit_map[branch] is None:
-                return 0
-            # print(f"body {body} // branch {branch} // count {self.orbit_counter}")  # DEBUG
-            self.orbit_counter += self.orbit_counter + 1 + self.count_branch(body)
-            print(f"{self.orbit_counter=}")
-            return self.orbit_counter
+            print(f"counting {body=}. {branch=} next={self.orbit_map[branch]}")
+            self.orbit_counter += 1
+            self.count_orbits_but_better(branch)
 
 
 orbit_mapper = OrbitMapper()
 
 def orbit_validator(map_data):
 
-    # TODO parse data into a useable list
-
+    # separate the data into data and next loc and add the note to the linked list
     for i,node in enumerate(map_data):
-        # separate the data into data and next loc
         body = map_data[i][:-1]
         next_body = map_data[i][-1]
-        # add the node to the linked list
         orbit_mapper.add(body, next_body)
 
-
     pp.pprint(orbit_mapper.orbit_map)
-    # print(f"{orbit_mapper.tails=}")
-    orbit_mapper.count_orbits(orbit_mapper.head)
-    # print(f"{orbit_mapper.count_orbits(orbit_mapper.head)=}")
+    # orbit_mapper.count_orbits(orbit_mapper.head)
+    orbit_mapper.count_orbits_but_better(orbit_mapper.head)
     print(f"Total orbits: {orbit_mapper.orbit_counter}")
     return "Done."
 
@@ -185,4 +125,5 @@ def orbit_validator(map_data):
 print(orbit_validator(['COMB','BC','CD','DE','EF','BG', 'GH','DI','EJ','JK','KL'])) # test (with branches)
 # print(orbit_validator()) # the full test
 
-print(f"Run time: {datetime.now() - startTime}")
+
+print(f"Run time: {time.time_ns() - star_time} ns")

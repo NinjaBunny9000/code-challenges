@@ -1,43 +1,24 @@
 # Puzzle: https://adventofcode.com/2019/day/3
 
-from datetime import datetime
+import time
 import pprint
 
-startTime = datetime.now()
+star_time = time.time_ns()
+# startTime = datetime.now()
 pp = pprint.PrettyPrinter()
 
-# sample0 = [['R8']]
-# sample0 = [['R8','U5']]
-# sample0 = [['R8','U5'],['U7','R6']]
-sample0 = [['R8','U5','L5','D3']]
-sample1 = [['R8','U5','L5','D3'],['U7','R6','D4','L4']]
-sample2 = [['R75','D30','R83','U83','L12','D49','R71','U7','L72'],['U62','R66','U55','R34','D71','R55','D58','R83']]
-sample3 = [['R98','U47','R26','D63','R33','U87','L62','D20','R33','U53','R51'],['U98','R91','D20','R16','D67','R40','U7','R15','U6','R7']]
 
 grid = {
     # position, lines at point
     # (0,0) : []
 }
 
-movements_dict = {
-    'U' : {'x':0,'y':1},
-    'D' : {'x':0,'y':-1},
-    'L' : {'x':-1,'y':0},
-    'R' : {'x':1,'y':0},
-}
-
-movements_tup = {
-    'U' : (0,1),
-    'D' : (0,-1),
-    'L' : (-1,0),
-    'R' : (1,0),
-}
 
 movements = {
     'U' : [0,1],
     'D' : [0,-1],
     'L' : [-1,0],
-    'R' : [1,0],
+    'R' : [1,0]
 }
 
 
@@ -79,11 +60,9 @@ def crossed_wires(lines):
 
             # move the cursor for each step and mark the point in the grid
             x_step = 1 if moving[0] >= 0 else -1
-            # print(f"{x_step=}")
             for x in range(0,moving[0] + x_step,x_step):
 
                 y_step = 1 if moving[1] >= 0 else -1
-                # print(f"{y_step=}")
                 for y in range(0,moving[1] + y_step,y_step):
 
                     cursor[0] = x + prev_cursor[0]
@@ -101,66 +80,6 @@ def crossed_wires(lines):
                         print(f"{start=} line={i} {move[0]=} {distance=} {moving=}")
 
         print(f"End of line. {tuple(cursor)=}")
-
-
-
-            # coordinates = [(axis*x,axis*y) for x in range(distance+1) for y in range(distance+1)]
-            # print(f"{coordinates=}")
-            # while distance >= 0:
-
-            # for x in range(distance+1):
-            #     for y in range(distance+1):
-            #         cursor = (x,y)
-                    # if cursor not in grid:
-                    #     grid[cursor] = 1
-                    # else:
-                    #     if grid[cursor] == 1:
-                    #         grid[cursor] += 1
-
-
-            # for point in range(distance+1):
-            #     # append cursor to grid
-            #     cursor = tuple([axis*point for axis in direction])
-            #     print(f"{cursor=}")
-            #     if cursor not in grid:
-            #         grid[cursor] = 1
-            #     else:
-            #         if grid[cursor] == 1:
-            #             grid[cursor] += 1
-            # prev_cursor = list(cursor)
-            # print(f"{prev_cursor=}")
-
-                # grid[cursor] = i if cursor not in grid else grid[cursor].append(i)
-
-                # if i in grid[tuple(cursor)]:
-                #     grid[cursor].append(i)
-                #     pass
-                # else:
-                #     grid[cursor] = i
-                # move the cursor
-                # count cursor down
-                # distance -= 1
-                # print(f"line {i} added at {cursor}")
-            # pp.pprint(grid)
-
-            # for each axis
-            # for j,axis in enumerate(moving):
-                # cursor = [0,0]  # NOTE reset the cursor for each move??
-
-                # print(f"{axis=} line={i} {moving[j]=}")
-
-
-                # # iterate through movements one step at a time and add the points to the grid
-                # for dist in range(axis):
-                #     # cursor = [axis]
-                #     # print(f"line={i} {dist=}")
-                #     # add point to the grid
-
-
-
-
-    # pp.pprint(grid)
-            # mark grid for each movement
 
 
     shortest_dist = None
@@ -181,11 +100,20 @@ def crossed_wires(lines):
                 shortest_loc = int_loc
                 print(f"Closer intersection detected @ {int_loc}. Distance: {shortest_dist}.")
 
+    pp.pprint(grid)
+
     print(f"\nThe closest intersection is at {shortest_loc} and has a manhatten distance of {shortest_dist}.\n")
 
     return "================================ DONE ================================="
 
 
+# sample0 = [['R8']]
+# sample0 = [['R8','U5']]
+# sample0 = [['R8','U5'],['U7','R6']]
+# sample0 = [['R8','U5','L5','D3']]
+# sample1 = [['R8','U5','L5','D3'],['U7','R6','D4','L4']]
+sample2 = [['R75','D30','R83','U83','L12','D49','R71','U7','L72'],['U62','R66','U55','R34','D71','R55','D58','R83']]
+# sample3 = [['R98','U47','R26','D63','R33','U87','L62','D20','R33','U53','R51'],['U98','R91','D20','R16','D67','R40','U7','R15','U6','R7']]
 
 
 # print(crossed_wires(sample0)) # TEST
@@ -194,4 +122,4 @@ print(crossed_wires(sample2)) # 159
 # print(crossed_wires(sample3)) # 135
 # print(crossed_wires()) # the full test
 
-print(f"Run time: {datetime.now() - startTime}")
+print(f"Run time: {time.time_ns() - star_time} ns")
