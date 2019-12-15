@@ -1,9 +1,9 @@
 # Kata: 
 
-from datetime import datetime
+import time
 import pprint
 
-startTime = datetime.now()
+star_time = time.time_ns()
 pp = pprint.PrettyPrinter()
 
 
@@ -19,4 +19,4 @@ def solver():
 print(solver()) # sample test
 print(solver()) # the full test
 
-print(f"Run time: {datetime.now() - startTime}")
+print(f"Run time: {time.time_ns() - star_time} ns")
