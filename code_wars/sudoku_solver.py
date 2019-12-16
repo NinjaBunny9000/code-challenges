@@ -4,7 +4,7 @@ import time
 import pprint
 from collections import Counter
 
-star_time = time.time_ns()
+start_time = time.time_ns()
 pp = pprint.PrettyPrinter()
 
 """
@@ -63,71 +63,83 @@ solution_4 = [
     [9, 1, 2, 3, 4, 5, 6, 7, 8]
     ]
 
-# ideas:
-# - sort then compare (d: doesn't account for 0's)
-    # array.sort()
-    # test_array = [1,2,3,4,5,6,7,8,9]
-# - checking for duplicates 0,9 (using a set)
+solution_5 = [
+  [5, 3, 4, 6, 7, 8, 9, 1, 2],
+  [6, 7, 2, 1, 9, 5, 3, 4, 8],
+  [1, 9, 0, 3, 4, 2, 5, 6, 7],
+  [8, 5, 9, 7, 6, 1, 4, 2, 3],
+  [4, 2, 6, 8, 5, 3, 7, 9, 1],
+  [7, 1, 3, 9, 2, 4, 8, 5, 6],
+  [9, 6, 1, 5, 3, 7, 0, 8, 4],
+  [2, 8, 7, 4, 1, 9, 6, 3, 5],
+  [3, 4, 5, 2, 8, 6, 1, 7, 9]
+] # => true
 
-def confirm_digits(array):
-    # checking for duplicates 0,9 (using counter)
-    counter = Counter(array)
+
+def confirm_digits(line):
+    """checks line by line for duplicates"""
+    counter = Counter(line)
     dupes = [key for (key, value) in counter.items() if value > 1 and key]
-    if dupes:
-        print(f"dupes = {dupes}")
-        return False
-    return True
+    return not dupes
 
 
-def validate_9x9(solution):
-    zeroes = 0
-    pp.pprint(solution)
-    for line in solution:
+def validate_9x9(array):
+    """validates solutions line by line on 9x9 array"""
+    zeroes = 0  # fail if >1 zero in 9x9 array
+    for line in array:
         if confirm_digits(line) is False:
-            print("failed confirm_digits")
             return False
         for num in line:
             if num == 0:
                 zeroes += 1
                 if zeroes > 1:
                     return False
-                    print("failed zeros")
-
     return True
 
 
 def validSolution(solution):
+    """validate a 9x9 sudoku solution"""
+    
+    # split up into 9x 3x3 arrays and validate them
+    solution_3x3 = [[],[],[],[],[],[],[],[],[]]
+    for i in range(2,9,3):
+        # every 3 lines
+        for j in range(2,9,3):
+            # every 3 rows
+            nine_by_nine = []
+            nine_by_nine.append(solution[i-2][j-2])
+            nine_by_nine.append(solution[i-2][j-1])
+            nine_by_nine.append(solution[i-2][j])
+            nine_by_nine.append(solution[i-1][j-2])
+            nine_by_nine.append(solution[i-1][j-1])
+            nine_by_nine.append(solution[i-1][j])
+            nine_by_nine.append(solution[i][j-2])
+            nine_by_nine.append(solution[i][j-1])
+            nine_by_nine.append(solution[i][j])
 
-    # create a rotated array
+            if confirm_digits(nine_by_nine) is False:
+                return False
+
+    # rotate the array/solution
     solution_rotated = [[],[],[],[],[],[],[],[],[]]
     for line in solution:
         for i,num in enumerate(line):
             solution_rotated[i].append(num)
-    # pp.pprint(solution_rotated)        
-    
-    solution_3x3 = [[],[],[],[],[],[],[],[],[]]
-    # split up into 9x 3x3 arrays 
-    for i,line in enumerate(solution):
-        
-        pass
 
-
-
-    print(f"{validate_9x9(solution)}")
-    print(f"{validate_9x9(solution_rotated)}")
-
-    # validated line by line
+    # validate 9x9 solution and a rotated version
     if validate_9x9(solution) and validate_9x9(solution_rotated):
         return True
     else:
         return False
 
 
-print(validSolution(solution_1)) # true
-# print(validSolution(solution_2)) # false (multiple zero's)
+# print(validSolution(solution_1)) # true
+# print(validSolution(solution_2)) # false (dupes)
 # print(validSolution(solution_3)) # false (dupes)
+# print(validSolution(solution_4)) # false (dupes)
+print(validSolution(solution_5)) # false (mult zeros)
 
-print(f"Run time: {time.time_ns() - star_time} ns")
+print(f"Run time: {time.time_ns() - start_time} ns")
 
 
 
